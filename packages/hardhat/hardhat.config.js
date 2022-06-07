@@ -160,9 +160,9 @@ module.exports = {
         mnemonic: mnemonic(),
       },
     },
-    polytest: {
-      url: "https://speedy-nodes-nyc.moralis.io/XXXXXXXXXXXXXXXXXXXXXXX/polygon/mumbai", // <---- YOUR MORALIS ID! (not limited to infura)
-      gasPrice: 1000000000,
+    mumbai: {
+      url: "https://polygon-mumbai.g.alchemy.com/v2/xRHpCO8trBhhIEf_S6gHVzPNKcoNb7VN", // <---- YOUR MORALIS ID! (not limited to infura)
+      gasPrice: 50000000000,
       accounts: {
         mnemonic: mnemonic(),
       },

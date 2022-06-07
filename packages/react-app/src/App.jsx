@@ -60,7 +60,7 @@ const { ethers } = require("ethers");
 */
 
 /// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const targetNetwork = NETWORKS.mumbai; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
@@ -463,48 +463,36 @@ function App(props) {
   }
 
   const rollTheDice = async () => {
-
     setDiceRolled(true);
     setDiceRollImage("ROLL");
 
-    tx(
-      writeContracts.DiceGame.rollTheDice({ value: ethers.utils.parseEther("0.002"), gasLimit: 500000 }),
-      update => {
-
-        if (update?.status === "failed") {
-          setDiceRolled(false);
-          setDiceRollImage(null);
-        }
-      },
-    );
+    tx(writeContracts.DiceGame.rollTheDice({ value: ethers.utils.parseEther("0.002"), gasLimit: 500000 }), update => {
+      if (update?.status === "failed") {
+        setDiceRolled(false);
+        setDiceRollImage(null);
+      }
+    });
   };
 
-{/*
   const riggedRoll = async () => {
-
     setDiceRolled(true);
     setDiceRollImage("ROLL");
 
-    tx(
-      writeContracts.RiggedRoll.riggedRoll({ gasLimit: 500000 }),
-      update => {
-        console.log("TX UPDATE",update)
+    tx(writeContracts.RiggedRoll.riggedRoll({ gasLimit: 500000 }), update => {
+      console.log("TX UPDATE", update);
 
-        if (update?.status === "failed") {
+      if (update?.status === "failed") {
+        setDiceRolled(false);
+        setDiceRollImage(null);
+      }
+
+      if (update?.status == 1 || update?.status == "confirmed") {
+        setTimeout(() => {
           setDiceRolled(false);
           setDiceRollImage(null);
-        }
-
-        if(update?.status==1 || update?.status=="confirmed")
-        {
-          setTimeout(()=>{
-            setDiceRolled(false);
-            setDiceRollImage(null);
-          },1500)
-        }
-
-      },
-    );
+        }, 1500);
+      }
+    });
   };
 
   const riggedFilter = readContracts.DiceGame?.filters.Roll(riggedRoll.address, null);
@@ -516,8 +504,6 @@ function App(props) {
       setDiceRolled(false);
     }
   });
-*/}
-
 
   const filter = readContracts.DiceGame?.filters.Roll(address, null);
 
@@ -562,14 +548,17 @@ function App(props) {
         {console.log("roll events: ", rollEvents)}
         <Switch>
           <Route exact path="/">
-            <div style={{ display: 'flex'}}>
-              <div style={{ width: 250, margin: "auto", marginTop: 64}}>
+            <div style={{ display: "flex" }}>
+              <div style={{ width: 250, margin: "auto", marginTop: 64 }}>
                 <div>Roll Events:</div>
-                <List style={{ height: 258, overflow: 'hidden' }}
+                <List
+                  style={{ height: 258, overflow: "hidden" }}
                   dataSource={rollEvents}
                   renderItem={item => {
                     return (
-                      <List.Item key={item.args[0] + " " + item.args[1] + " " + date.getTime() + " " + item.blockNumber}>
+                      <List.Item
+                        key={item.args[0] + " " + item.args[1] + " " + date.getTime() + " " + item.blockNumber}
+                      >
                         <Address value={item.args[0]} ensProvider={mainnetProvider} fontSize={16} />
                         &nbsp;Roll:&nbsp;{item.args[1].toNumber().toString(16).toUpperCase()}
                       </List.Item>
@@ -577,15 +566,14 @@ function App(props) {
                   }}
                 />
               </div>
-              <div id='centerWrapper' style = {{ padding: 16 }}>
+              <div id="centerWrapper" style={{ padding: 16 }}>
                 <h2>Roll a 0, 1, or 2 to win the prize!</h2>
                 <Balance balance={prize} dollarMultiplier={price} fontSize={32} />
-                <div style={{ padding: 16, format: 'flex', flexDirection: 'row' }}>
+                <div style={{ padding: 16, format: "flex", flexDirection: "row" }}>
                   <Button type="primary" disabled={diceRolled} onClick={rollTheDice}>
                     Roll the dice!
                   </Button>
-                  {/*
-                  <div style={{ padding: 16 }}> 
+                  <div style={{ padding: 16 }}>
                     <Account
                       address={readContracts?.RiggedRoll?.address}
                       localProvider={localProvider}
@@ -601,18 +589,19 @@ function App(props) {
                       Rigged Roll!
                     </Button>
                   </div>
-                */}
                 </div>
                 {diceRollImg}
               </div>
-              <div style={{ width: 250, margin: "auto", marginTop: 32}}>
-
+              <div style={{ width: 250, margin: "auto", marginTop: 32 }}>
                 <div>Winner Events:</div>
-                <List style={{ height: 258, overflow: 'hidden' }}
+                <List
+                  style={{ height: 258, overflow: "hidden" }}
                   dataSource={winnerEvents}
                   renderItem={item => {
                     return (
-                      <List.Item key={item.args[0] + " " + item.args[1] + " " + date.getTime() + " " + item.blockNumber}>
+                      <List.Item
+                        key={item.args[0] + " " + item.args[1] + " " + date.getTime() + " " + item.blockNumber}
+                      >
                         <Address value={item.args[0]} ensProvider={mainnetProvider} fontSize={16} />
                         <br></br>
                         <Balance balance={item.args[1]} dollarMultiplier={price} />

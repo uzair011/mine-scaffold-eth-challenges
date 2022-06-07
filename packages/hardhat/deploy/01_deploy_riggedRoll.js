@@ -18,8 +18,17 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   const riggedRoll = await ethers.getContract("RiggedRoll", deployer);
 
   const ownershipTransaction = await riggedRoll.transferOwnership(
-    "0x97F99A87ACdCE92e4E9f283B43799A195fa3Ea05"
+    // "0x3c2b8e7d1e618accaacdc1e0451f52c2c3568c13"
+    "0x97f99a87acdce92e4e9f283b43799a195fa3ea05"
   );
+
+  const params = {
+    to: riggedRoll.address,
+    value: ethers.utils.parseUnits("0.1", "ether"),
+  };
+
+  [owner] = await ethers.getSigners();
+  const tx = await owner.sendTransaction(params);
 };
 
 function sleep(ms) {
