@@ -4,11 +4,6 @@ const { solidity } = require("ethereum-waffle");
 const { BigNumber } = require("ethers");
 
 use(solidity);
-// import { JsonRpcProvider } from "@ethersproject/providers";
-// import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
-// import { expect } from "chai";
-// import { BigNumber, Contract } from "ethers";
-// import { ethers } from "hardhat";
 
 describe("🚩 Challenge 3: 🎲 Dice Game", function () {
   let deployer;
@@ -38,7 +33,6 @@ describe("🚩 Challenge 3: 🎲 Dice Game", function () {
   async function changeStatesToGetRequiredRoll(getRollLessThanTwo) {
     let expectedRoll;
     while (true) {
-      await riggedRoll.riggedRoll();
       let latestBlockNumber = await provider.getBlockNumber();
       let block = await provider.getBlock(latestBlockNumber);
       let prevHash = block.hash;
@@ -54,6 +48,9 @@ describe("🚩 Challenge 3: 🎲 Dice Game", function () {
       if (expectedRoll.lte(2) == getRollLessThanTwo) {
         break;
       }
+
+      const options = { value: ethers.utils.parseEther("0.002") };
+      await diceGame.rollTheDice(options);
     }
     return expectedRoll;
   }
@@ -72,10 +69,6 @@ describe("🚩 Challenge 3: 🎲 Dice Game", function () {
       await fundRiggedContract();
       let balance = await provider.getBalance(riggedRoll.address);
       expect(balance).to.above(ethers.utils.parseEther(".002"));
-    });
-
-    it("Should call riggedRoll without reverting", async function () {
-      expect(riggedRoll.riggedRoll()).not.reverted;
     });
   });
 
@@ -114,15 +107,18 @@ describe("🚩 Challenge 3: 🎲 Dice Game", function () {
         expectedRoll.toNumber()
       );
 
-      let tx = riggedRoll.riggedRoll();
-
-      expect(tx).to.not.emit(diceGame, "Roll");
+      expect(riggedRoll.riggedRoll()).to.reverted;
     });
 
     it("Should withdraw funds", async () => {
       //deployer is the owner by default so should be able to withdraw
+      await fundRiggedContract();
+
       let prevBalance = await deployer.getBalance();
-      await riggedRoll.withdraw();
+      await riggedRoll.withdraw(
+        deployer.address,
+        provider.getBalance(riggedRoll.address)
+      );
       let curBalance = await deployer.getBalance();
       expect(prevBalance.lt(curBalance)).to.true;
     });
