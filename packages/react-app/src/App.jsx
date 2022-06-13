@@ -42,18 +42,13 @@ const diceImages = importAll(require.context("./images/", false, /\.(png)$/));
 const { ethers } = require("ethers");
 /*
     Welcome to 🏗 scaffold-eth !
-
     Code:
     https://github.com/scaffold-eth/scaffold-eth
-
     Support:
     https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA
     or DM @austingriffith on twitter or telegram
-
     You should get your own Infura.io ID and put it in `constants.js`
     (this is your connection to the main Ethereum network for ENS etc.)
-
-
     🌏 EXTERNAL CONTRACTS:
     You can also bring in contract artifacts in `constants.js`
     (and then use the `useExternalContractLoader()` hook!)
@@ -474,40 +469,26 @@ function App(props) {
     });
   };
 
-  /*
   const riggedRoll = async () => {
-    tx(
-      writeContracts.RiggedRoll.riggedRoll({ gasLimit: 500000 }),
-      update => {
-        console.log("TX UPDATE",update)
-        if (update?.status === "sent" || update?.status === 1) {
-          setDiceRolled(true);
-          setDiceRollImage("ROLL");
-        }
-
+    tx(writeContracts.RiggedRoll.riggedRoll({ gasLimit: 500000 }), update => {
+      console.log("TX UPDATE", update);
+      if (update?.status === "sent" || update?.status === 1) {
+        setDiceRolled(true);
+        setDiceRollImage("ROLL");
+      }
       if (update?.status === "failed") {
         setDiceRolled(false);
-        setDiceRollImage(null);
+        //setDiceRollImage(null);
       }
-
       if (update?.status == 1 || update?.status == "confirmed") {
         setTimeout(() => {
           setDiceRolled(false);
           //setDiceRollImage(null);
-        }
-        if(update?.status==1 || update?.status=="confirmed")
-        {
-          setTimeout(()=>{
-            setDiceRolled(false);
-            //setDiceRollImage(null);
-          },1500)
-        }
-      },
-    );
+        }, 1500);
+      }
+    });
   };
-
   const riggedFilter = readContracts.DiceGame?.filters.Roll(riggedRoll.address, null);
-
   readContracts.DiceGame?.on(riggedFilter, (_, value) => {
     if (value) {
       const numberRolled = value.toNumber().toString(16).toUpperCase();
@@ -515,7 +496,6 @@ function App(props) {
       setDiceRolled(false);
     }
   });
-*/
 
   const filter = readContracts.DiceGame?.filters.Roll(address, null);
 
@@ -585,7 +565,6 @@ function App(props) {
                   <Button type="primary" disabled={diceRolled} onClick={rollTheDice}>
                     Roll the dice!
                   </Button>
-                  {/*
                   <div style={{ padding: 16 }}>
                     <Account
                       address={readContracts?.RiggedRoll?.address}

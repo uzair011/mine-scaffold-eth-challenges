@@ -26,14 +26,14 @@ contract RiggedRoll is Ownable {
         bytes32 hash = keccak256(abi.encodePacked(prevHash, address(diceGame), diceGame.nonce()));                                                                                                               
         uint256 roll = uint256(hash) % 16;                                                    
 
-        // require(roll <= 2, "roll should be less than 2");
-        // diceGame.rollTheDice{value: 0.002 ether}();
+        require(roll <= 2, "roll should be less than 2");
+        diceGame.rollTheDice{value: 0.002 ether}();
 
-        if(roll <= 2){
-            diceGame.rollTheDice{value: 0.002 ether}();
-        }else{
-            console.log("roll greater than 2 so dicegame.rollTheDice not called");
-        }
+        // if(roll <= 2){
+        //     diceGame.rollTheDice{value: 0.002 ether}();
+        // }else{
+        //     console.log("roll greater than 2 so dicegame.rollTheDice not called");
+        // }
     }
 
     //Add receive() function so contract can receive Eth
